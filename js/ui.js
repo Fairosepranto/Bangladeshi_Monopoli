@@ -1,11 +1,9 @@
-﻿import { getLocalizedText } from './i18n.js';
+import { getLocalizedText } from './i18n.js';
 import { getPlayerColor } from './players.js';
 import { buildHouse, sellHouse, mortgageProperty, unmortgageProperty } from './gameEngine.js';
 
-
 let gameLogElement;
 let logContentElement;
-
 
 /**
  * Initializes UI elements and sets up initial state.
@@ -14,44 +12,66 @@ export function initUI() {
     gameLogElement = document.getElementById('game-log');
     logContentElement = document.getElementById('log-content');
     // Ensure initial UI state for buttons
+    // These buttons are now hidden by default in HTML and shown by JS after game starts
     document.getElementById('roll-dice-btn').disabled = true;
     document.getElementById('end-turn-btn').disabled = true;
-    document.getElementById('buy-property-btn').classList.add('hidden'); // Hidden by default
     document.getElementById('buy-property-btn').disabled = true;
     document.getElementById('manage-properties-btn').disabled = true;
     document.getElementById('trade-btn').disabled = true;
+    document.getElementById('save-game-btn').disabled = true;
+    document.getElementById('load-game-btn').disabled = false; // Load can be active initially
+    document.getElementById('reset-game-btn').disabled = false; // Reset can be active initially
 }
-
 
 /**
  * Updates all dynamic UI elements based on the current game state.
  */
 export function updateUI() {
-    updatePlayerInfo(window.gameState.players[window.gameState.currentPlayerIndex]);
-    updatePlayerList();
-    updateDiceDisplay(window.gameState.dice[0], window.gameState.dice[1]);
-
-
-    // Update button states
-    const currentPlayer = window.gameState.players[window.gameState.currentPlayerIndex];
-    if (window.gameState.isGameRunning) {
-        document.getElementById('manage-properties-btn').disabled = false;
-        document.getElementById('trade-btn').disabled = false;
-        // Roll dice and End Turn buttons are managed by gameEngine logic
+    // Only update player info if players exist
+    if (window.gameState.players.length > 0) {
+        updatePlayerInfo(window.gameState.players[window.gameState.currentPlayerIndex]);
+        updatePlayerList();
     } else {
-        document.getElementById('roll-dice-btn').disabled = true;
-        document.getElementById('end-turn-btn').disabled = true;
-        document.getElementById('manage-properties-btn').disabled = true;
-        document.getElementById('trade-btn').disabled = true;
+        // Set default/empty state if no players
+        document.getElementById('current-player-name').textContent = 'Player 1';
+        document.getElementById('current-player-name').style.color = 'var(--dark-text)';
+        document.getElementById('current-player-cash').textContent = `${window.gameState.config.currencySymbol} 15000`;
+        document.getElementById('player-list').innerHTML = ''; // Clear player list
     }
 
+    updateDiceDisplay(window.gameState.dice[0], window.gameState.dice[1]);
+
+    // Update button states based on game running status
+    if (window.gameState.isGameRunning) {
+        document.getElementById('roll-dice-btn').disabled = false;
+        document.getElementById('end-turn-btn').disabled = true; // Disabled until roll
+        document.getElementById('manage-properties-btn').disabled = false;
+        document.getElementById('trade-btn').disabled = false;
+        document.getElementById('save-game-btn').disabled = false;
+        document.getElementById('load-game-btn').disabled = false;
+        document.getElementById('reset-game-btn').disabled = false;
+
+        // Hide Start Game button if game is running
+        document.getElementById('start-game-btn').classList.add('hidden');
+    } else {
+        // Show Start Game button if game is not running
+        document.getElementById('start-game-btn').classList.remove('hidden');
+        document.getElementById('roll-dice-btn').disabled = true;
+        document.getElementById('end-turn-btn').disabled = true;
+        document.getElementById('buy-property-btn').disabled = true;
+        document.getElementById('manage-properties-btn').disabled = true;
+        document.getElementById('trade-btn').disabled = true;
+        document.getElementById('save-game-btn').disabled = true;
+        // Load and Reset can remain enabled even if game isn't running
+        document.getElementById('load-game-btn').disabled = false;
+        document.getElementById('reset-game-btn').disabled = false;
+    }
 
     // Update settings based on game state
     document.getElementById('language-select').value = window.gameState.language;
     document.getElementById('sfx-toggle').checked = window.gameState.sfxEnabled;
     document.getElementById('free-parking-jackpot-toggle').checked = window.gameState.config.freeParkingJackpot;
 }
-
 
 /**
  * Updates the display for the current player's information.
@@ -61,12 +81,10 @@ export function updatePlayerInfo(player) {
     const playerNameEl = document.getElementById('current-player-name');
     const playerCashEl = document.getElementById('current-player-cash');
 
-
     playerNameEl.textContent = player.name;
     playerNameEl.style.color = getPlayerColor(player.id);
     playerCashEl.textContent = `${window.gameState.config.currencySymbol} ${player.cash.toLocaleString()}`;
 }
-
 
 /**
  * Updates the list of all players and their cash/status.
@@ -74,7 +92,6 @@ export function updatePlayerInfo(player) {
 export function updatePlayerList() {
     const playerListEl = document.getElementById('player-list');
     playerListEl.innerHTML = ''; // Clear existing list
-
 
     window.gameState.players.forEach(player => {
         const playerSummaryEl = document.createElement('div');
@@ -86,24 +103,20 @@ export function updatePlayerList() {
             playerSummaryEl.classList.add('bankrupt');
         }
 
-
         const nameSpan = document.createElement('span');
         nameSpan.classList.add('player-summary-name');
         nameSpan.textContent = player.name;
         nameSpan.style.color = getPlayerColor(player.id); // Set player color
 
-
         const cashSpan = document.createElement('span');
         cashSpan.classList.add('player-summary-cash');
         cashSpan.textContent = `${window.gameState.config.currencySymbol} ${player.cash.toLocaleString()}`;
-
 
         playerSummaryEl.appendChild(nameSpan);
         playerSummaryEl.appendChild(cashSpan);
         playerListEl.appendChild(playerSummaryEl);
     });
 }
-
 
 /**
  * Updates the displayed dice values.
@@ -114,12 +127,10 @@ export function updateDiceDisplay(die1, die2) {
     const die1El = document.getElementById('die1');
     const die2El = document.getElementById('die2');
 
-
     // Use Unicode dice characters
     die1El.textContent = String.fromCodePoint(0x2680 + (die1 - 1));
     die2El.textContent = String.fromCodePoint(0x2680 + (die2 - 1));
 }
-
 
 /**
  * Adds a message to the game log.
@@ -137,7 +148,6 @@ export function updateLog(message) {
     logContentElement.scrollTop = logContentElement.scrollHeight; // Scroll to bottom
 }
 
-
 /**
  * Shows a specific modal.
  * @param {string} modalId - The ID of the modal element.
@@ -146,7 +156,6 @@ export function showModal(modalId) {
     document.getElementById(modalId).classList.remove('hidden');
 }
 
-
 /**
  * Hides a specific modal.
  * @param {string} modalId - The ID of the modal element.
@@ -154,7 +163,6 @@ export function showModal(modalId) {
 export function hideModal(modalId) {
     document.getElementById(modalId).classList.add('hidden');
 }
-
 
 /**
  * Shows the generic message modal.
@@ -167,14 +175,12 @@ export function showMessageModal(title, message) {
     showModal('message-modal');
 }
 
-
 /**
  * Hides the generic message modal.
  */
 export function hideMessageModal() {
     hideModal('message-modal');
 }
-
 
 /**
  * Updates the content of the manage properties modal.
@@ -185,21 +191,17 @@ export function updateManagePropertiesModal(playerProperties, player) {
     const listContainer = document.getElementById('manage-properties-list');
     listContainer.innerHTML = ''; // Clear existing list
 
-
     if (playerProperties.length === 0) {
         listContainer.textContent = getLocalizedText('no_properties_owned');
         return;
     }
 
-
     playerProperties.forEach(tile => {
         const propertyItem = document.createElement('div');
         propertyItem.classList.add('property-item');
 
-
         const infoDiv = document.createElement('div');
         infoDiv.classList.add('property-item-info');
-
 
         // Color band for properties
         if (tile.type === 'property' && tile.group) {
@@ -208,11 +210,9 @@ export function updateManagePropertiesModal(playerProperties, player) {
             infoDiv.appendChild(colorBand);
         }
 
-
         const nameSpan = document.createElement('span');
         nameSpan.textContent = getLocalizedText(tile.name_en, tile.name_bn);
         infoDiv.appendChild(nameSpan);
-
 
         if (tile.isMortgaged) {
             const mortgagedSpan = document.createElement('span');
@@ -229,13 +229,10 @@ export function updateManagePropertiesModal(playerProperties, player) {
             infoDiv.appendChild(improvementsSpan);
         }
 
-
         propertyItem.appendChild(infoDiv);
-
 
         const actionsDiv = document.createElement('div');
         actionsDiv.classList.add('property-item-actions');
-
 
         if (tile.type === 'property') {
             const buildBtn = document.createElement('button');
@@ -245,7 +242,6 @@ export function updateManagePropertiesModal(playerProperties, player) {
             buildBtn.disabled = tile.hasHotel || tile.isMortgaged; // Cannot build if hotel or mortgaged
             actionsDiv.appendChild(buildBtn);
 
-
             const sellBtn = document.createElement('button');
             sellBtn.textContent = getLocalizedText('sell');
             sellBtn.classList.add('game-button');
@@ -253,7 +249,6 @@ export function updateManagePropertiesModal(playerProperties, player) {
             sellBtn.disabled = (!tile.hasHotel && (tile.houses || 0) === 0) || tile.isMortgaged; // Cannot sell if no improvements or mortgaged
             actionsDiv.appendChild(sellBtn);
         }
-
 
         const mortgageBtn = document.createElement('button');
         mortgageBtn.textContent = tile.isMortgaged ? getLocalizedText('unmortgage') : getLocalizedText('mortgage');
@@ -263,12 +258,10 @@ export function updateManagePropertiesModal(playerProperties, player) {
         mortgageBtn.disabled = (tile.type === 'property' && ((tile.houses || 0) > 0 || tile.hasHotel) && !tile.isMortgaged);
         actionsDiv.appendChild(mortgageBtn);
 
-
         propertyItem.appendChild(actionsDiv);
         listContainer.appendChild(propertyItem);
     });
 }
-
 
 /**
  * Toggles the visibility of the debug panel.
@@ -277,7 +270,6 @@ export function toggleDebugPanel() {
     const debugPanel = document.getElementById('debug-panel');
     debugPanel.classList.toggle('hidden');
 }
-
 
 /**
  * Sets up listeners for debug buttons.
@@ -292,7 +284,6 @@ export function setupDebugButtons() {
             updateUI();
         }
     });
-
 
     document.getElementById('debug-force-card').addEventListener('click', () => {
         const player = window.gameState.players[window.gameState.currentPlayerIndex];
@@ -319,7 +310,6 @@ export function setupDebugButtons() {
         }
     });
 
-
     document.getElementById('debug-add-house').addEventListener('click', () => {
         const player = window.gameState.players[window.gameState.currentPlayerIndex];
         const tileId = parseInt(prompt(getLocalizedText('enter_tile_id_to_add_house')));
@@ -343,7 +333,6 @@ export function setupDebugButtons() {
         }
     });
 
-
     document.getElementById('debug-teleport').addEventListener('click', () => {
         const player = window.gameState.players[window.gameState.currentPlayerIndex];
         const newPos = parseInt(prompt(getLocalizedText('enter_tile_id_to_teleport')));
@@ -361,7 +350,6 @@ export function setupDebugButtons() {
         }
     });
 
-
     document.getElementById('debug-bankrupt').addEventListener('click', () => {
         const player = window.gameState.players[window.gameState.currentPlayerIndex];
         // Call bankruptPlayer from gameEngine
@@ -370,7 +358,6 @@ export function setupDebugButtons() {
         });
         updateLog(`${player.name} ${getLocalizedText('forced_bankrupt')} (Debug).`);
     });
-
 
     document.getElementById('debug-close').addEventListener('click', toggleDebugPanel);
 }
