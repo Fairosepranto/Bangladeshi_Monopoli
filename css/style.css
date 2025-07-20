@@ -258,12 +258,14 @@ body {
     color: var(--player1-color); /* Will be updated by JS */
 }
 
-/* Board Container */
+/* Board Container - CRITICAL GRID DEFINITION */
 .board-container {
     grid-area: board;
     display: grid;
-    grid-template-columns: repeat(11, 1fr);
-    grid-template-rows: repeat(11, 1fr);
+    /* Define 11 columns: 1.5fr for corners, repeat 9 times for side tiles, 1.5fr for other corners */
+    grid-template-columns: 1.5fr repeat(9, 1fr) 1.5fr;
+    /* Define 11 rows: 1.5fr for corners, repeat 9 times for side tiles, 1.5fr for other corners */
+    grid-template-rows: 1.5fr repeat(9, 1fr) 1.5fr;
     aspect-ratio: 1 / 1; /* Keep it square */
     max-width: 600px; /* Max size for the board */
     max-height: 600px;
