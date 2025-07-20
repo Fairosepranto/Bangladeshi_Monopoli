@@ -273,9 +273,25 @@ body {
     border-radius: 15px;
     box-shadow: 0 5px 15px var(--shadow-dark);
     overflow: hidden; /* Ensure player tokens stay within */
-    position: relative; /* For player tokens */
+    position: relative; /* For center text and player tokens */
     margin: auto; /* Center the board */
 }
+
+/* Board Center Text */
+.board-center-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.8em; /* Adjust size as needed */
+    font-weight: bold;
+    color: var(--bangladesh-green); /* Or a contrasting color */
+    text-align: center;
+    line-height: 1.2;
+    pointer-events: none; /* Allow clicks to pass through to elements below */
+    z-index: 2; /* Below tokens, above board background */
+}
+
 
 /* Board Tiles */
 .tile {
@@ -310,9 +326,8 @@ body {
 }
 
 /* Corner Tiles (GO, Jail, Free Parking, Go To Jail) */
+/* Removed nth-child specific positioning as it's now handled by board.js directly */
 .tile.corner {
-    grid-column: span 2;
-    grid-row: span 2;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -320,48 +335,7 @@ body {
     font-weight: bold;
     background-color: var(--corner-tile-bg);
     border-radius: 10px; /* Rounded corners for corner tiles */
-}
-
-/* Specific Corner Tile Adjustments */
-/* Bottom-right corner: GO */
-.board-container > :nth-child(1) {
-    grid-column: 11 / 12;
-    grid-row: 11 / 12;
-    border-bottom-right-radius: 10px;
-}
-/* Bottom row tiles */
-.board-container > :nth-child(2), .board-container > :nth-child(3), .board-container > :nth-child(4), .board-container > :nth-child(5), .board-container > :nth-child(6), .board-container > :nth-child(7), .board-container > :nth-child(8), .board-container > :nth-child(9), .board-container > :nth-child(10) {
-    grid-row: 11 / 12;
-}
-/* Bottom-left corner: Jail */
-.board-container > :nth-child(11) {
-    grid-column: 1 / 2;
-    grid-row: 11 / 12;
-    border-bottom-left-radius: 10px;
-}
-/* Left column tiles */
-.board-container > :nth-child(12), .board-container > :nth-child(13), .board-container > :nth-child(14), .board-container > :nth-child(15), .board-container > :nth-child(16), .board-container > :nth-child(17), .board-container > :nth-child(18), .board-container > :nth-child(19), .board-container > :nth-child(20) {
-    grid-column: 1 / 2;
-}
-/* Top-left corner: Free Parking */
-.board-container > :nth-child(21) {
-    grid-column: 1 / 2;
-    grid-row: 1 / 2;
-    border-top-left-radius: 10px;
-}
-/* Top row tiles */
-.board-container > :nth-child(22), .board-container > :nth-child(23), .board-container > :nth-child(24), .board-container > :nth-child(25), .board-container > :nth-child(26), .board-container > :nth-child(27), .board-container > :nth-child(28), .board-container > :nth-child(29), .board-container > :nth-child(30) {
-    grid-row: 1 / 2;
-}
-/* Top-right corner: Go To Jail */
-.board-container > :nth-child(31) {
-    grid-column: 11 / 12;
-    grid-row: 1 / 2;
-    border-top-right-radius: 10px;
-}
-/* Right column tiles */
-.board-container > :nth-child(32), .board-container > :nth-child(33), .board-container > :nth-child(34), .board-container > :nth-child(35), .board-container > :nth-child(36), .board-container > :nth-child(37), .board-container > :nth-child(38), .board-container > :nth-child(39), .board-container > :nth-child(40) {
-    grid-column: 11 / 12;
+    /* grid-column and grid-row spans are now set directly in board.js */
 }
 
 
