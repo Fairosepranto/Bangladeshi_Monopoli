@@ -1,15 +1,13 @@
-﻿/**
+/**
  * @typedef {object} LocalizationStrings
  * @property {string} en - English string.
  * @property {string} [bn] - Bengali string.
  */
 
-
 /**
  * @type {string}
  */
 let currentLanguage = 'en';
-
 
 /**
  * @type {Object.<string, LocalizationStrings>}
@@ -54,7 +52,7 @@ const translations = {
     'game_saved_successfully': { en: 'Game state saved successfully!', bn: 'গেমের অবস্থা সফলভাবে সংরক্ষিত হয়েছে!' },
     'save_failed': { en: 'Failed to save game state.', bn: 'গেমের অবস্থা সংরক্ষণ করতে ব্যর্থ হয়েছে।' },
     'game_loaded': { en: 'Game Loaded', bn: 'গেম লোড হয়েছে' },
-    'game_loaded_successfully': { en: 'Game state loaded successfully!', bn: 'গেমের অবস্থা সফলভাবে লোড হয়েছে!' },
+    'game_loaded_successfully': { en: 'Ggame state loaded successfully!', bn: 'গেমের অবস্থা সফলভাবে লোড হয়েছে!' },
     'load_failed': { en: 'Failed to load game state.', bn: 'গেমের অবস্থা লোড করতে ব্যর্থ হয়েছে।' },
     'no_saved_game': { en: 'No Saved Game', bn: 'কোন সংরক্ষিত গেম নেই' },
     'no_saved_game_found': { en: 'No saved game found in your browser.', bn: 'আপনার ব্রাউজারে কোন সংরক্ষিত গেম পাওয়া যায়নি।' },
@@ -68,7 +66,6 @@ const translations = {
     'returned_to_bank': { en: 'returned to the bank.', bn: 'ব্যাংকে ফেরত গেছে।' },
     'lost_to_bank': { en: 'cash lost to the bank.', bn: 'নগদ টাকা ব্যাংকের কাছে হারিয়েছে।' },
     'forced_bankrupt': { en: 'was forced into bankruptcy', bn: 'কে দেউলিয়া করা হয়েছে' },
-
 
     // Modals
     'buy_property_title': { en: 'Buy Property?', bn: 'সম্পত্তি কিনবেন?' },
@@ -103,12 +100,11 @@ const translations = {
     'sold_hotel_on': { en: 'sold a hotel on', bn: 'এর উপর একটি হোটেল বিক্রি করেছে' },
     'cannot_mortgage': { en: 'Cannot Mortgage', bn: 'বন্ধক রাখতে পারবেন না' },
     'must_sell_all_improvements_first': { en: 'You must sell all houses and hotels on all properties in this color group before mortgaging.', bn: 'বন্ধক রাখার আগে আপনাকে এই রঙের গ্রুপের সমস্ত সম্পত্তির উপর সমস্ত ঘর এবং হোটেল বিক্রি করতে হবে।' },
-    'mortgaged': { en: 'mortgaged', bn: 'বন্ধক রেখেছে' },
+    'mortgaged': { en: 'Mortgaged', bn: 'বন্ধক রাখা হয়েছে' },
     'cannot_unmortgage': { en: 'Cannot Unmortgage', bn: 'বন্ধক মুক্ত করতে পারবেন না' },
     'not_enough_cash_unmortgage': { en: 'You do not have enough cash to unmortgage this property.', bn: 'এই সম্পত্তি বন্ধক মুক্ত করার জন্য আপনার কাছে পর্যাপ্ত নগদ টাকা নেই।' },
-    'unmortgaged': { en: 'unmortgaged', bn: 'বন্ধক মুক্ত করেছে' },
+    'unmortgaged': { en: 'Unmortgaged', bn: 'বন্ধক মুক্ত করেছে' },
     'is_mortgaged_no_rent': { en: 'is mortgaged. No rent collected.', bn: 'বন্ধক রাখা হয়েছে। কোন ভাড়া সংগ্রহ করা হয়নি।' },
-
 
     // Jail Modal
     'you_are_in_jail_message': { en: 'You are in Thana. What would you like to do?', bn: 'আপনি থানায় আছেন। আপনি কি করতে চান?' },
@@ -123,12 +119,10 @@ const translations = {
     'no_goojf_card': { en: 'You do not have a Get Out of Thana Free card.', bn: 'আপনার কাছে "থানা থেকে বিনামূল্যে বের হন" কার্ড নেই।' },
     'used_goojf_card': { en: 'used a Get Out of Thana Free card and is out of Thana!', bn: 'একটি "থানা থেকে বিনামূল্যে বের হন" কার্ড ব্যবহার করেছে এবং থানা থেকে বেরিয়ে এসেছে!' },
 
-
     // Settings
     'language_changed_to': { en: 'Language changed to ', bn: 'ভাষা পরিবর্তন করা হয়েছে ' },
     'sfx_toggled': { en: 'Sound Effects Toggled: ', bn: 'সাউন্ড ইফেক্ট চালু/বন্ধ: ' },
     'free_parking_jackpot_toggled': { en: 'Free Parking Jackpot Toggled: ', bn: 'ফ্রি পার্কিং জ্যাকপট চালু/বন্ধ: ' },
-
 
     // Debug
     'enter_amount_to_give': { en: 'Enter amount to give cash:', bn: 'নগদ টাকা দেওয়ার পরিমাণ লিখুন:' },
@@ -148,8 +142,11 @@ const translations = {
     'tile_details': { en: 'Tile Details', bn: 'টাইল বিবরণ' },
     'passed_go_collected': { en: 'passed GO and collected %s.', bn: 'GO অতিক্রম করেছে এবং %s সংগ্রহ করেছে।' },
     'double_rent_full_set': { en: 'Owner has full set! Double rent charged.', bn: 'মালিকের সম্পূর্ণ সেট আছে! দ্বিগুণ ভাড়া চার্জ করা হয়েছে।' },
-};
 
+    // New translations for game setup cancellation
+    'game_cancelled': { en: 'Game Setup Cancelled', bn: 'গেম সেটআপ বাতিল করা হয়েছে' },
+    'player_setup_cancelled': { en: 'Player setup was cancelled. Please start a new game.', bn: 'খেলোয়াড় সেটআপ বাতিল করা হয়েছে। অনুগ্রহ করে একটি নতুন গেম শুরু করুন।' }
+};
 
 /**
  * Initializes the i18n system.
@@ -158,7 +155,6 @@ const translations = {
 export function initI18n(lang) {
     currentLanguage = lang;
 }
-
 
 /**
  * Sets the current language for the game.
@@ -172,7 +168,6 @@ export function setLanguage(lang) {
         currentLanguage = 'en';
     }
 }
-
 
 /**
  * Gets the localized text for a given key.
@@ -192,15 +187,12 @@ export function getLocalizedText(key, altBnText = null, ...args) {
         // console.warn(`Translation key "${key}" not found. Using key as English text.`);
     }
 
-
     let text = currentLanguage === 'bn' && textObj.bn ? (altBnText || textObj.bn) : textObj.en;
-
 
     // Simple string substitution for %s
     args.forEach(arg => {
         text = text.replace('%s', arg);
     });
-
 
     return text;
 }
