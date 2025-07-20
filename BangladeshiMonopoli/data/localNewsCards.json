@@ -1,0 +1,144 @@
+﻿{
+  "cards": [
+    {
+      "id": 1,
+      "text_en": "From sale of stock you get ৳500.",
+      "text_bn": "স্টক বিক্রি থেকে আপনি ৳500 পেয়েছেন।",
+      "action": "collect_money",
+      "amount": 500
+    },
+    {
+      "id": 2,
+      "text_en": "Life insurance matures. Collect ৳1000.",
+      "text_bn": "জীবন বীমা পরিপক্ক হয়েছে। ৳1000 সংগ্রহ করুন।",
+      "action": "collect_money",
+      "amount": 1000
+    },
+    {
+      "id": 3,
+      "text_en": "Pay hospital fees of ৳100.",
+      "text_bn": "৳100 হাসপাতালের ফি পরিশোধ করুন।",
+      "action": "pay_money",
+      "amount": 100
+    },
+    {
+      "id": 4,
+      "text_en": "Receive ৳200 consultancy fee.",
+      "text_bn": "৳200 পরামর্শ ফি গ্রহণ করুন।",
+      "action": "collect_money",
+      "amount": 200
+    },
+    {
+      "id": 5,
+      "text_en": "Go to Thana.",
+      "text_bn": "থানায় যান।",
+      "action": "go_to_jail"
+    },
+    {
+      "id": 6,
+      "text_en": "You are assessed for street repairs. ৳400 per house, ৳1150 per hotel.",
+      "text_bn": "আপনার রাস্তার মেরামতের জন্য মূল্যায়ন করা হয়েছে। প্রতিটি ঘরের জন্য ৳400, প্রতিটি হোটেলের জন্য ৳1150।",
+      "action": "property_repairs",
+      "houseCost": 400,
+      "hotelCost": 1150
+    },
+    {
+      "id": 7,
+      "text_en": "Income tax refund. Collect ৳200.",
+      "text_bn": "আয়কর ফেরত। ৳200 সংগ্রহ করুন।",
+      "action": "collect_money",
+      "amount": 200
+    },
+    {
+      "id": 8,
+      "text_en": "From sale of shares, collect ৳450.",
+      "text_bn": "শেয়ার বিক্রি থেকে, ৳450 সংগ্রহ করুন।",
+      "action": "collect_money",
+      "amount": 450
+    },
+    {
+      "id": 9,
+      "text_en": "You have won second prize in a beauty contest. Collect ৳100.",
+      "text_bn": "আপনি একটি সৌন্দর্য প্রতিযোগিতায় দ্বিতীয় পুরস্কার জিতেছেন। ৳100 সংগ্রহ করুন।",
+      "action": "collect_money",
+      "amount": 100
+    },
+    {
+      "id": 10,
+      "text_en": "Inherit ৳100 from a relative.",
+      "text_bn": "একজন আত্মীয়ের কাছ থেকে ৳100 উত্তরাধিকার সূত্রে পেয়েছেন।",
+      "action": "collect_money",
+      "amount": 100
+    },
+    {
+      "id": 11,
+      "text_en": "Pay school fees of ৳50.",
+      "text_bn": "৳50 স্কুল ফি পরিশোধ করুন।",
+      "action": "pay_money",
+      "amount": 50
+    },
+    {
+      "id": 12,
+      "text_en": "You are fined ৳100 for jaywalking.",
+      "text_bn": "রাস্তা পারাপারের জন্য আপনার ৳100 জরিমানা হয়েছে।",
+      "action": "pay_money",
+      "amount": 100
+    },
+    {
+      "id": 13,
+      "text_en": "It is your wedding anniversary. Receive ৳50 from each player.",
+      "text_bn": "আজ আপনার বিবাহ বার্ষিকী। প্রতিটি খেলোয়াড়ের কাছ থেকে ৳50 গ্রহণ করুন।",
+      "action": "collect_from_each_player",
+      "amount": 50
+    },
+    {
+      "id": 14,
+      "text_en": "Cyclone relief grant. Collect ৳500.",
+      "text_bn": "ঘূর্ণিঝড় ত্রাণ অনুদান। ৳500 সংগ্রহ করুন।",
+      "action": "collect_money",
+      "amount": 500
+    },
+    {
+      "id": 15,
+      "text_en": "Pay your insurance premium ৳50.",
+      "text_bn": "আপনার বীমা প্রিমিয়াম ৳50 পরিশোধ করুন।",
+      "action": "pay_money",
+      "amount": 50
+    },
+    {
+      "id": 16,
+      "text_en": "You have won a local festival bonus of ৳250.",
+      "text_bn": "আপনি একটি স্থানীয় উৎসব বোনাস ৳250 জিতেছেন।",
+      "action": "collect_money",
+      "amount": 250
+    },
+    {
+      "id": 17,
+      "text_en": "Your car breaks down. Pay ৳100 for repairs.",
+      "text_bn": "আপনার গাড়ি নষ্ট হয়ে গেছে। মেরামতের জন্য ৳100 পরিশোধ করুন।",
+      "action": "pay_money",
+      "amount": 100
+    },
+    {
+      "id": 18,
+      "text_en": "Found a lost wallet. Collect ৳150.",
+      "text_bn": "একটি হারানো মানিব্যাগ পাওয়া গেছে। ৳150 সংগ্রহ করুন।",
+      "action": "collect_money",
+      "amount": 150
+    },
+    {
+      "id": 19,
+      "text_en": "Your business flourished. Collect ৳300.",
+      "text_bn": "আপনার ব্যবসা সমৃদ্ধ হয়েছে। ৳300 সংগ্রহ করুন।",
+      "action": "collect_money",
+      "amount": 300
+    },
+    {
+      "id": 20,
+      "text_en": "Unexpected bill. Pay ৳75.",
+      "text_bn": "অপ্রত্যাশিত বিল। ৳75 পরিশোধ করুন।",
+      "action": "pay_money",
+      "amount": 75
+    }
+  ]
+}

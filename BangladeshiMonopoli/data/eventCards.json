@@ -1,0 +1,142 @@
+﻿{
+  "cards": [
+    {
+      "id": 1,
+      "text_en": "Advance to GO. Collect ৳2000.",
+      "text_bn": "GO তে এগিয়ে যান। ৳2000 সংগ্রহ করুন।",
+      "action": "move_to",
+      "tileId": 0
+    },
+    {
+      "id": 2,
+      "text_en": "Go to Thana. Go directly to Thana. Do not pass GO, do not collect ৳2000.",
+      "text_bn": "থানায় যান। সরাসরি থানায় যান। GO অতিক্রম করবেন না, ৳2000 সংগ্রহ করবেন না।",
+      "action": "go_to_jail"
+    },
+    {
+      "id": 3,
+      "text_en": "Bank error in your favor. Collect ৳200.",
+      "text_bn": "আপনার পক্ষে ব্যাংক ত্রুটি। ৳200 সংগ্রহ করুন।",
+      "action": "collect_money",
+      "amount": 200
+    },
+    {
+      "id": 4,
+      "text_en": "Doctor's fees. Pay ৳500.",
+      "text_bn": "ডাক্তারের ফি। ৳500 পরিশোধ করুন।",
+      "action": "pay_money",
+      "amount": 500
+    },
+    {
+      "id": 5,
+      "text_en": "Get Out of Thana Free. This card may be kept until needed or sold.",
+      "text_bn": "থানা থেকে বিনামূল্যে বের হন। এই কার্ডটি প্রয়োজন না হওয়া পর্যন্ত রাখা বা বিক্রি করা যেতে পারে।",
+      "action": "get_out_of_jail_free"
+    },
+    {
+      "id": 6,
+      "text_en": "Go back 3 spaces.",
+      "text_bn": "৩ ঘর পিছনে যান।",
+      "action": "move_steps",
+      "steps": -3
+    },
+    {
+      "id": 7,
+      "text_en": "Advance to nearest Station. If unowned, you may buy it from the Bank. If owned, pay owner twice the rent to which they are otherwise entitled.",
+      "text_bn": "নিকটতম স্টেশনে এগিয়ে যান। যদি মালিকানাহীন হয়, আপনি ব্যাংক থেকে এটি কিনতে পারেন। যদি মালিকানাধীন হয়, মালিককে দ্বিগুণ ভাড়া দিন।",
+      "action": "advance_to_nearest_station"
+    },
+    {
+      "id": 8,
+      "text_en": "You have been elected Chairman of the Board. Pay each player ৳50.",
+      "text_bn": "আপনি বোর্ডের চেয়ারম্যান নির্বাচিত হয়েছেন। প্রতিটি খেলোয়াড়কে ৳50 দিন।",
+      "action": "pay_each_player",
+      "amount": 50
+    },
+    {
+      "id": 9,
+      "text_en": "Building loan matures. Collect ৳1500.",
+      "text_bn": "বিল্ডিং ঋণ পরিপক্ক হয়েছে। ৳1500 সংগ্রহ করুন।",
+      "action": "collect_money",
+      "amount": 1500
+    },
+    {
+      "id": 10,
+      "text_en": "Your building loan matures. Collect ৳150.",
+      "text_bn": "আপনার বিল্ডিং ঋণ পরিপক্ক হয়েছে। ৳150 সংগ্রহ করুন।",
+      "action": "collect_money",
+      "amount": 150
+    },
+    {
+      "id": 11,
+      "text_en": "Pay poor tax of ৳150.",
+      "text_bn": "৳150 দরিদ্র কর পরিশোধ করুন।",
+      "action": "pay_money",
+      "amount": 150
+    },
+    {
+      "id": 12,
+      "text_en": "You inherit ৳1000.",
+      "text_bn": "আপনি ৳1000 উত্তরাধিকার সূত্রে পেয়েছেন।",
+      "action": "collect_money",
+      "amount": 1000
+    },
+    {
+      "id": 13,
+      "text_en": "Go to Mirpur. If you pass GO, collect ৳2000.",
+      "text_bn": "মিরপুরে যান। যদি আপনি GO অতিক্রম করেন, ৳2000 সংগ্রহ করুন।",
+      "action": "move_to",
+      "tileId": 31
+    },
+    {
+      "id": 14,
+      "text_en": "Your properties need repair. For each house pay ৳250. For each hotel pay ৳1000.",
+      "text_bn": "আপনার সম্পত্তির মেরামত প্রয়োজন। প্রতিটি ঘরের জন্য ৳250 পরিশোধ করুন। প্রতিটি হোটেলের জন্য ৳1000 পরিশোধ করুন।",
+      "action": "property_repairs",
+      "houseCost": 250,
+      "hotelCost": 1000
+    },
+    {
+      "id": 15,
+      "text_en": "Advance to Kamalapur Station. If you pass GO, collect ৳2000.",
+      "text_bn": "কমলাপুর স্টেশনে এগিয়ে যান। যদি আপনি GO অতিক্রম করেন, ৳2000 সংগ্রহ করুন।",
+      "action": "move_to",
+      "tileId": 35
+    },
+    {
+      "id": 16,
+      "text_en": "You have won a lottery prize of ৳500.",
+      "text_bn": "আপনি ৳500 লটারি পুরস্কার জিতেছেন।",
+      "action": "collect_money",
+      "amount": 500
+    },
+    {
+      "id": 17,
+      "text_en": "It is your birthday. Collect ৳100 from each player.",
+      "text_bn": "আজ আপনার জন্মদিন। প্রতিটি খেলোয়াড়ের কাছ থেকে ৳100 সংগ্রহ করুন।",
+      "action": "collect_from_each_player",
+      "amount": 100
+    },
+    {
+      "id": 18,
+      "text_en": "Speeding fine ৳150.",
+      "text_bn": "দ্রুতগতিতে গাড়ি চালানোর জরিমানা ৳150।",
+      "action": "pay_money",
+      "amount": 150
+    },
+    {
+      "id": 19,
+      "text_en": "Your investment matures. Collect ৳2000.",
+      "text_bn": "আপনার বিনিয়োগ পরিপক্ক হয়েছে। ৳2000 সংগ্রহ করুন।",
+      "action": "collect_money",
+      "amount": 2000
+    },
+    {
+      "id": 20,
+      "text_en": "Advance to Feni Sadar. If you pass GO, collect ৳2000.",
+      "text_bn": "ফেনী সদরে এগিয়ে যান। যদি আপনি GO অতিক্রম করেন, ৳2000 সংগ্রহ করুন।",
+      "action": "move_to",
+      "tileId": 11
+    }
+  ]
+}

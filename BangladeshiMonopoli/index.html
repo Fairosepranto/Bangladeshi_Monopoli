@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangladeshi Monopoly</title>
+    <!-- Google Fonts for Noto Sans Bengali and Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- The splash screen HTML has been removed to start the game directly -->
+
+
+    <!-- Main Game Container -->
+    <div id="game-container" class="game-container">
+        <div class="header-panel">
+            <div id="dice-container" class="dice-container">
+                <div class="dice" id="die1">⚀</div>
+                <div class="dice" id="die2">⚀</div>
+            </div>
+            <button id="roll-dice-btn" class="game-button">Roll Dice</button>
+            <div id="current-player-info" class="current-player-info">
+                <span id="current-player-name">Player 1</span>
+                <span id="current-player-cash">৳ 15000</span>
+            </div>
+            <button id="end-turn-btn" class="game-button">End Turn</button>
+        </div>
+
+
+        <div id="board-container" class="board-container">
+            <!-- Board tiles will be dynamically generated here by board.js -->
+        </div>
+
+
+        <div class="footer-panel">
+            <div id="player-list" class="player-list">
+                <!-- Player summaries will be generated here -->
+            </div>
+            <div class="action-buttons">
+                <button id="buy-property-btn" class="game-button hidden">Buy Property</button>
+                <button id="manage-properties-btn" class="game-button">Manage Properties</button>
+                <button id="trade-btn" class="game-button">Trade</button>
+                <button id="settings-btn" class="game-button">Settings</button>
+                <button id="save-game-btn" class="game-button">Save Game</button>
+                <button id="load-game-btn" class="game-button">Load Game</button>
+                <button id="reset-game-btn" class="game-button">Reset Game</button>
+            </div>
+        </div>
+
+
+        <div id="game-log" class="game-log">
+            <h3>Game Log</h3>
+            <div id="log-content" class="log-content"></div>
+        </div>
+
+
+        <!-- Modals -->
+        <!-- Buy Property Modal -->
+        <div id="buy-property-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3 id="buy-modal-title">Buy Property?</h3>
+                <p id="buy-modal-message"></p>
+                <div class="modal-actions">
+                    <button id="buy-modal-confirm" class="game-button">Buy</button>
+                    <button id="buy-modal-decline" class="game-button">Decline (Auction)</button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Manage Properties Modal -->
+        <div id="manage-properties-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Manage Properties</h3>
+                <div id="manage-properties-list" class="property-management-list">
+                    <!-- Properties will be listed here -->
+                </div>
+                <button id="manage-modal-close" class="game-button">Close</button>
+            </div>
+        </div>
+
+
+        <!-- Trade Modal -->
+        <div id="trade-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Trade</h3>
+                <p>Trade functionality will be implemented here.</p>
+                <button id="trade-modal-close" class="game-button">Close</button>
+            </div>
+        </div>
+
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Settings</h3>
+                <div class="setting-item">
+                    <label for="language-select">Language:</label>
+                    <select id="language-select">
+                        <option value="en">English</option>
+                        <option value="bn">বাংলা</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label for="sfx-toggle">Sound Effects:</label>
+                    <input type="checkbox" id="sfx-toggle" checked>
+                </div>
+                <div class="setting-item">
+                    <label for="free-parking-jackpot-toggle">Free Parking Jackpot:</label>
+                    <input type="checkbox" id="free-parking-jackpot-toggle">
+                </div>
+                <button id="settings-modal-close" class="game-button">Close</button>
+            </div>
+        </div>
+
+
+        <!-- Jail Modal -->
+        <div id="jail-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>You are in Thana!</h3>
+                <p id="jail-modal-message"></p>
+                <div class="modal-actions">
+                    <button id="jail-pay-fine-btn" class="game-button">Pay ৳500</button>
+                    <button id="jail-roll-doubles-btn" class="game-button">Try for Doubles</button>
+                    <button id="jail-use-card-btn" class="game-button hidden">Use Get Out of Thana Free Card</button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Game Over Modal -->
+        <div id="game-over-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3 id="game-over-title">Game Over!</h3>
+                <p id="game-over-message"></p>
+                <button id="game-over-close" class="game-button">New Game</button>
+            </div>
+        </div>
+
+
+        <!-- Generic Message Modal -->
+        <div id="message-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3 id="message-modal-title"></h3>
+                <p id="message-modal-text"></p>
+                <button id="message-modal-close" class="game-button">OK</button>
+            </div>
+        </div>
+
+
+        <!-- Debug Panel -->
+        <div id="debug-panel" class="debug-panel hidden">
+            <h3>Debug Tools</h3>
+            <button id="debug-give-cash" class="debug-button">Give Cash</button>
+            <button id="debug-force-card" class="debug-button">Force Card</button>
+            <button id="debug-add-house" class="debug-button">Add House</button>
+            <button id="debug-teleport" class="debug-button">Teleport</button>
+            <button id="debug-bankrupt" class="debug-button">Bankrupt Current</button>
+            <button id="debug-close" class="debug-button">Close Debug</button>
+        </div>
+        <button id="toggle-debug-btn" class="toggle-debug-button">Debug</button>
+    </div>
+
+
+    <!-- Audio Elements -->
+    <audio id="dice-sfx" src="assets/audio/dice_roll.mp3" preload="auto"></audio>
+    <audio id="cash-sfx" src="assets/audio/cash_ching.mp3" preload="auto"></audio>
+
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
