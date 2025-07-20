@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Represents a player in the Monopoly game.
  */
 export class Player {
@@ -19,7 +19,6 @@ export class Player {
         this.isBankrupt = false;
     }
 
-
     /**
      * Adds cash to the player's balance.
      * @param {number} amount - The amount of cash to add.
@@ -28,7 +27,6 @@ export class Player {
         this.cash += amount;
     }
 
-
     /**
      * Deducts cash from the player's balance.
      * @param {number} amount - The amount of cash to deduct.
@@ -36,7 +34,6 @@ export class Player {
     deductCash(amount) {
         this.cash -= amount;
     }
-
 
     /**
      * Calculates the player's net worth (cash + property values).
@@ -57,7 +54,6 @@ export class Player {
         return netWorth;
     }
 }
-
 
 /**
  * Returns the CSS color variable for a given player ID.
