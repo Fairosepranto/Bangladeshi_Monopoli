@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,6 @@
 <body>
     <!-- The splash screen HTML has been removed to start the game directly -->
 
-
     <!-- Main Game Container -->
     <div id="game-container" class="game-container">
         <div class="header-panel">
@@ -19,41 +18,40 @@
                 <div class="dice" id="die1">⚀</div>
                 <div class="dice" id="die2">⚀</div>
             </div>
-            <button id="roll-dice-btn" class="game-button">Roll Dice</button>
+            <button id="roll-dice-btn" class="game-button hidden">Roll Dice</button> <!-- Hidden initially -->
             <div id="current-player-info" class="current-player-info">
                 <span id="current-player-name">Player 1</span>
                 <span id="current-player-cash">৳ 15000</span>
             </div>
-            <button id="end-turn-btn" class="game-button">End Turn</button>
+            <button id="end-turn-btn" class="game-button hidden">End Turn</button> <!-- Hidden initially -->
         </div>
-
 
         <div id="board-container" class="board-container">
             <!-- Board tiles will be dynamically generated here by board.js -->
         </div>
-
 
         <div class="footer-panel">
             <div id="player-list" class="player-list">
                 <!-- Player summaries will be generated here -->
             </div>
             <div class="action-buttons">
-                <button id="buy-property-btn" class="game-button hidden">Buy Property</button>
-                <button id="manage-properties-btn" class="game-button">Manage Properties</button>
-                <button id="trade-btn" class="game-button">Trade</button>
+                <!-- New Start Game Button -->
+                <button id="start-game-btn" class="game-button">Start Game</button>
+
+                <button id="buy-property-btn" class="game-button hidden">Buy Property</button> <!-- Hidden initially -->
+                <button id="manage-properties-btn" class="game-button hidden">Manage Properties</button> <!-- Hidden initially -->
+                <button id="trade-btn" class="game-button hidden">Trade</button> <!-- Hidden initially -->
                 <button id="settings-btn" class="game-button">Settings</button>
-                <button id="save-game-btn" class="game-button">Save Game</button>
-                <button id="load-game-btn" class="game-button">Load Game</button>
-                <button id="reset-game-btn" class="game-button">Reset Game</button>
+                <button id="save-game-btn" class="game-button hidden">Save Game</button> <!-- Hidden initially -->
+                <button id="load-game-btn" class="game-button hidden">Load Game</button> <!-- Hidden initially -->
+                <button id="reset-game-btn" class="game-button hidden">Reset Game</button> <!-- Hidden initially -->
             </div>
         </div>
-
 
         <div id="game-log" class="game-log">
             <h3>Game Log</h3>
             <div id="log-content" class="log-content"></div>
         </div>
-
 
         <!-- Modals -->
         <!-- Buy Property Modal -->
@@ -68,7 +66,6 @@
             </div>
         </div>
 
-
         <!-- Manage Properties Modal -->
         <div id="manage-properties-modal" class="modal hidden">
             <div class="modal-content">
@@ -80,7 +77,6 @@
             </div>
         </div>
 
-
         <!-- Trade Modal -->
         <div id="trade-modal" class="modal hidden">
             <div class="modal-content">
@@ -89,7 +85,6 @@
                 <button id="trade-modal-close" class="game-button">Close</button>
             </div>
         </div>
-
 
         <!-- Settings Modal -->
         <div id="settings-modal" class="modal hidden">
@@ -114,7 +109,6 @@
             </div>
         </div>
 
-
         <!-- Jail Modal -->
         <div id="jail-modal" class="modal hidden">
             <div class="modal-content">
@@ -128,7 +122,6 @@
             </div>
         </div>
 
-
         <!-- Game Over Modal -->
         <div id="game-over-modal" class="modal hidden">
             <div class="modal-content">
@@ -138,7 +131,6 @@
             </div>
         </div>
 
-
         <!-- Generic Message Modal -->
         <div id="message-modal" class="modal hidden">
             <div class="modal-content">
@@ -147,7 +139,6 @@
                 <button id="message-modal-close" class="game-button">OK</button>
             </div>
         </div>
-
 
         <!-- Debug Panel -->
         <div id="debug-panel" class="debug-panel hidden">
@@ -162,11 +153,9 @@
         <button id="toggle-debug-btn" class="toggle-debug-button">Debug</button>
     </div>
 
-
     <!-- Audio Elements -->
     <audio id="dice-sfx" src="assets/audio/dice_roll.mp3" preload="auto"></audio>
     <audio id="cash-sfx" src="assets/audio/cash_ching.mp3" preload="auto"></audio>
-
 
     <script type="module" src="js/main.js"></script>
 </body>
