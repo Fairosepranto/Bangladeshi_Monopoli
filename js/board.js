@@ -1,7 +1,6 @@
-﻿import { getLocalizedText } from './i18n.js';
+import { getLocalizedText } from './i18n.js';
 import { showModal, showMessageModal, updateLog } from './ui.js';
 import { getPlayerColor } from './players.js';
-
 
 /**
  * @typedef {object} Tile
@@ -22,13 +21,11 @@ import { getPlayerColor } from './players.js';
  * @property {boolean} [isMortgaged] - True if property is mortgaged.
  */
 
-
 /**
  * @type {Tile[]}
  */
 let boardTiles = [];
 let boardContainer;
-
 
 /**
  * Initializes the board with tile data.
@@ -38,7 +35,6 @@ export function initBoard(tilesData) {
     boardTiles = tilesData;
     boardContainer = document.getElementById('board-container');
 }
-
 
 /**
  * Renders the game board based on the boardTiles data.
@@ -50,10 +46,8 @@ export function renderBoard() {
     }
     boardContainer.innerHTML = ''; // Clear existing board
 
-
     // Determine the grid positions for each tile
     const tilePositions = calculateTilePositions(boardTiles.length);
-
 
     boardTiles.forEach((tile, index) => {
         const tileElement = document.createElement('div');
@@ -61,12 +55,10 @@ export function renderBoard() {
         tileElement.dataset.id = tile.id;
         tileElement.dataset.index = index;
 
-
         // Apply specific classes for layout and styling
         if (index === 0 || index === 10 || index === 20 || index === 30) {
             tileElement.classList.add('corner');
         }
-
 
         // Add class for side to apply correct color band positioning
         if (index >= 0 && index <= 9) {
@@ -79,10 +71,8 @@ export function renderBoard() {
             tileElement.classList.add('right-column');
         }
 
-
         // Apply specific tile type classes
         tileElement.classList.add(tile.type.replace(/_/g, '-')); // e.g., 'go-to-jail' becomes 'go-to-jail'
-
 
         // Add color band for properties
         if (tile.type === 'property' && tile.group) {
@@ -92,20 +82,17 @@ export function renderBoard() {
             tileElement.classList.add(`group-${tile.group}`); // Add group class to tile for general styling
         }
 
-
         // Add icon based on tile type
         const iconElement = document.createElement('div');
         iconElement.classList.add('icon');
         iconElement.innerHTML = getTileIcon(tile.type, tile.subtype);
         tileElement.appendChild(iconElement);
 
-
         // Add tile name
         const nameElement = document.createElement('div');
         nameElement.classList.add('tile-name');
         nameElement.textContent = getLocalizedText(tile.name_en, tile.name_bn);
         tileElement.appendChild(nameElement);
-
 
         // Add price for purchasable tiles
         if (tile.price) {
@@ -115,29 +102,23 @@ export function renderBoard() {
             tileElement.appendChild(priceElement);
         }
 
-
         // Add houses/hotels if applicable
         if (tile.type === 'property' && (tile.houses > 0 || tile.hasHotel)) {
             renderPropertyImprovements(tile.id, tile.houses, tile.hasHotel);
         }
 
-
         // Set grid position
         tileElement.style.gridColumn = tilePositions[index].col;
         tileElement.style.gridRow = tilePositions[index].row;
 
-
         // Add click listener to show tile details
         tileElement.addEventListener('click', () => showTileDetails(tile));
-
 
         boardContainer.appendChild(tileElement);
     });
 
-
     renderPlayerTokens();
 }
-
 
 /**
  * Calculates the grid positions for 40 tiles in a Monopoly-style layout.
@@ -148,31 +129,26 @@ function calculateTilePositions(numTiles) {
     const positions = [];
     const boardSize = 11; // 11x11 grid including corner spaces
 
-
     // Bottom row (index 0-9) - from bottom-right (10,10) to bottom-left (0,10)
     // Index 0 (GO) is at (11,11) in CSS grid terms, but we use 1-based indexing for grid-column/row
     for (let i = 0; i < 10; i++) {
         positions.push({ row: `${boardSize}`, col: `${boardSize - i}` });
     }
 
-
     // Left column (index 10-19) - from bottom-left (0,10) to top-left (0,0)
     for (let i = 0; i < 10; i++) {
         positions.push({ row: `${boardSize - 1 - i}`, col: `1` });
     }
-
 
     // Top row (index 20-29) - from top-left (0,0) to top-right (10,0)
     for (let i = 0; i < 10; i++) {
         positions.push({ row: `1`, col: `${1 + i}` });
     }
 
-
     // Right column (index 30-39) - from top-right (10,0) to bottom-right (10,10)
     for (let i = 0; i < 10; i++) {
         positions.push({ row: `${1 + i}`, col: `${boardSize}` });
     }
-
 
     // Adjust for 1-based CSS grid indexing if needed, but the current logic should map correctly.
     // The main point is that the corner tiles span 2x2 cells, and the side tiles are 1x1.
@@ -180,18 +156,15 @@ function calculateTilePositions(numTiles) {
     // The corner tiles will occupy the actual corners of the 11x11 grid.
     // This calculation is for the 40 standard tiles, assuming a 1-based grid system for CSS.
 
-
     // Correcting the corner tiles' grid-span for the 11x11 grid:
     // GO (index 0) is at (11,11)
     // Jail (index 10) is at (11,1)
     // Free Parking (index 20) is at (1,1)
     // Go To Jail (index 30) is at (1,11)
 
-
     // The current CSS handles the span for corners, so this function just needs to provide the starting cell for each tile.
     // The initial loop positions are correct for a 1-based grid.
     // For a 40 tile board on an 11x11 grid, the corner tiles will naturally align if their grid-span is handled by CSS.
-
 
     // Let's re-verify the grid positions for a 40-tile board on an 11x11 grid.
     // The CSS handles the `grid-column: span 2; grid-row: span 2;` for `.tile.corner`.
@@ -204,14 +177,12 @@ function calculateTilePositions(numTiles) {
         newPositions.push({ row: '11', col: `${11 - i}` });
     }
 
-
     // Left side (from bottom to top, 10 tiles)
     // Jail (10): col 1, row 11
     // 11-19: col 1, row 10 to 2
     for (let i = 0; i < 10; i++) {
         newPositions.push({ row: `${11 - i}`, col: '1' });
     }
-
 
     // Top side (from left to right, 10 tiles)
     // Free Parking (20): col 1, row 1
@@ -220,7 +191,6 @@ function calculateTilePositions(numTiles) {
         newPositions.push({ row: '1', col: `${1 + i}` });
     }
 
-
     // Right side (from top to bottom, 10 tiles)
     // Go To Jail (30): col 11, row 1
     // 31-39: col 11, row 2 to 10
@@ -228,11 +198,8 @@ function calculateTilePositions(numTiles) {
         newPositions.push({ row: `${1 + i}`, col: '11' });
     }
 
-
     return newPositions;
 }
-
-
 
 
 /**
@@ -263,14 +230,12 @@ function getTileIcon(type, subtype) {
     }
 }
 
-
 /**
  * Shows a modal with details about the clicked tile.
  * @param {Tile} tile - The tile object.
  */
 function showTileDetails(tile) {
     let message = `<strong>${getLocalizedText(tile.name_en, tile.name_bn)}</strong><br>`;
-
 
     if (tile.type === 'property' || tile.type === 'station' || tile.type === 'utility') {
         message += `Price: ${window.gameState.config.currencySymbol} ${tile.price}<br>`;
@@ -305,10 +270,8 @@ function showTileDetails(tile) {
         message += `Take a Cha Bazar Break.`;
     }
 
-
     showMessageModal(getLocalizedText('tile_details', 'টাইল বিবরণ'), message);
 }
-
 
 /**
  * Renders all player tokens on the board.
@@ -316,7 +279,6 @@ function showTileDetails(tile) {
 export function renderPlayerTokens() {
     // Remove existing tokens
     document.querySelectorAll('.player-token').forEach(token => token.remove());
-
 
     window.gameState.players.forEach(player => {
         if (!player.isBankrupt) {
@@ -328,7 +290,6 @@ export function renderPlayerTokens() {
         }
     });
 }
-
 
 /**
  * Updates the visual position of a player's token on the board.
@@ -342,39 +303,32 @@ export function updatePlayerTokenPosition(playerId, newPosition) {
         return;
     }
 
-
     const tileElement = document.querySelector(`.tile[data-index="${newPosition}"]`);
     if (!tileElement) {
         console.error(`Tile element for index ${newPosition} not found.`);
         return;
     }
 
-
     // Get the bounding rectangle of the tile
     const tileRect = tileElement.getBoundingClientRect();
     const boardRect = boardContainer.getBoundingClientRect();
-
 
     // Calculate relative position within the board container
     const relativeLeft = tileRect.left - boardRect.left;
     const relativeTop = tileRect.top - boardRect.top;
 
-
     // Adjust token position to fit within the tile, potentially staggering if multiple players on same tile
     const playersOnTile = window.gameState.players.filter(p => p.position === newPosition && !p.isBankrupt);
     const tokenIndexOnTile = playersOnTile.findIndex(p => p.id === playerId);
-
 
     // Simple staggering: offset by a small amount based on tokenIndexOnTile
     const offsetX = (tokenIndexOnTile % 3) * 10; // Max 3 per row
     const offsetY = Math.floor(tokenIndexOnTile / 3) * 10;
 
-
     // Position the token
     token.style.left = `${relativeLeft + 5 + offsetX}px`; // 5px padding from left edge
     token.style.top = `${relativeTop + 5 + offsetY}px`; // 5px padding from top edge
 }
-
 
 /**
  * Renders houses and hotels on a specific property tile.
@@ -386,22 +340,18 @@ export function renderPropertyImprovements(tileId, houses, hasHotel) {
     const tile = document.querySelector(`.tile[data-id="${tileId}"]`);
     if (!tile) return;
 
-
     // Remove existing improvements
     let housesContainer = tile.querySelector('.houses-container');
     if (housesContainer) {
         housesContainer.remove();
     }
 
-
     if (houses === 0 && !hasHotel) {
         return; // No improvements to render
     }
 
-
     housesContainer = document.createElement('div');
     housesContainer.classList.add('houses-container');
-
 
     if (hasHotel) {
         const hotel = document.createElement('div');
@@ -417,7 +367,6 @@ export function renderPropertyImprovements(tileId, houses, hasHotel) {
     tile.appendChild(housesContainer);
 }
 
-
 /**
  * Highlights the current player's token.
  * @param {number} playerId - The ID of the current player.
@@ -428,7 +377,6 @@ export function highlightCurrentPlayerToken(playerId) {
         token.style.transform = 'scale(1)';
         token.style.zIndex = '10';
     });
-
 
     const currentPlayerToken = document.querySelector(`.player-token.player-${playerId}`);
     if (currentPlayerToken) {
