@@ -1,9 +1,7 @@
-﻿import { updateLog } from './ui.js';
+import { updateLog } from './ui.js';
 import { getLocalizedText } from './i18n.js';
 
-
 const LOCAL_STORAGE_KEY = 'bangladeshiMonopolySave';
-
 
 /**
  * Saves the current game state to localStorage.
@@ -17,7 +15,6 @@ export function saveGameState(gameState) {
         updateLog(getLocalizedText('save_failed'));
     }
 }
-
 
 /**
  * Loads game state from localStorage.
@@ -35,7 +32,6 @@ export function loadGameState() {
     }
     return null;
 }
-
 
 /**
  * Clears the saved game state from localStorage.
