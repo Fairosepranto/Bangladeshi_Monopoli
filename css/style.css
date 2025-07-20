@@ -262,15 +262,15 @@ body {
 .board-container {
     grid-area: board;
     display: grid;
-    /* Define 11 columns: 2fr for first/last (corners), 1fr for the 9 inner columns */
-    grid-template-columns: 2fr repeat(9, 1fr) 2fr;
-    /* Define 11 rows: 2fr for first/last (corners), 1fr for the 9 inner rows */
-    grid-template-rows: 2fr repeat(9, 1fr) 2fr;
-    aspect-ratio: 1 / 1; /* Keep it square */
-    max-width: 600px; /* Max size for the board */
-    max-height: 600px;
-    width: 100%;
-    height: 100%;
+    /* Define 11 columns, all equal fractions */
+    grid-template-columns: repeat(11, 1fr);
+    /* Define 11 rows, all equal fractions */
+    grid-template-rows: repeat(11, 1fr);
+    
+    /* Set a fixed size for the board to ensure it always renders fully */
+    width: 600px; /* You can adjust this size */
+    height: 600px; /* Must be equal to width for a square board */
+
     border: 5px solid var(--border-color);
     border-radius: 15px;
     box-shadow: 0 5px 15px var(--shadow-dark);
