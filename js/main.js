@@ -90,24 +90,23 @@ async function initGameAndUI() {
         renderBoard(window.gameState.tiles);
 
         // Initialize game engine (resets state, but doesn't create players yet)
-        initGame();
+        initGame(); // This now only resets state, doesn't call updateUI
 
         // Setup UI event listeners (these can be set up before players exist)
         setupUIListeners();
         setupDebugButtons(); // Setup debug buttons
 
-        // --- CRITICAL CHANGE: Call startGame() BEFORE updateUI() ---
-        // startGame() will prompt for player names and populate window.gameState.players
-        startGame();
-
-        // Now that players exist, updateUI can safely be called
-        updateUI();
-
+        // --- CRITICAL CHANGE: DO NOT call startGame() here directly ---
+        // Instead, we will add a "Start Game" button to the UI to trigger it.
+        // The UI will initially show a default player state or a "Start Game" prompt.
+        updateUI(); // Update UI with initial (empty player) state
 
     } catch (error) {
         console.error("Failed to load game data or initialize game:", error);
         // The error message will now be more specific if it's a JSON content issue.
         showMessageModal('Error', `Failed to load game data: ${error.message || 'Unknown error'}. Please check console for details.`);
+        // Ensure game container is hidden if there's a critical loading error
+        gameContainer.classList.add('hidden');
     }
 }
 
@@ -115,15 +114,44 @@ async function initGameAndUI() {
  * Sets up all UI event listeners.
  */
 function setupUIListeners() {
+    // New: Add a dedicated "Start Game" button listener
+    const startGameButton = document.getElementById('start-game-btn');
+    if (startGameButton) {
+        startGameButton.addEventListener('click', () => {
+            const gameStartedSuccessfully = startGame();
+            if (gameStartedSuccessfully) {
+                updateUI(); // Update UI after players are created
+                // Hide the start game button and show other game buttons
+                startGameButton.classList.add('hidden');
+                document.getElementById('roll-dice-btn').classList.remove('hidden');
+                document.getElementById('end-turn-btn').classList.remove('hidden');
+                document.getElementById('manage-properties-btn').classList.remove('hidden');
+                document.getElementById('trade-btn').classList.remove('hidden');
+                document.getElementById('save-game-btn').classList.remove('hidden');
+                document.getElementById('load-game-btn').classList.remove('hidden');
+                document.getElementById('reset-game-btn').classList.remove('hidden');
+
+            } else {
+                // If game setup was cancelled or invalid, keep start button visible
+                startGameButton.classList.remove('hidden');
+                document.getElementById('roll-dice-btn').classList.add('hidden');
+                document.getElementById('end-turn-btn').classList.add('hidden');
+                document.getElementById('manage-properties-btn').classList.add('hidden');
+                document.getElementById('trade-btn').classList.add('hidden');
+                document.getElementById('save-game-btn').classList.add('hidden');
+                document.getElementById('load-game-btn').classList.add('hidden');
+                document.getElementById('reset-game-btn').classList.add('hidden');
+            }
+        });
+    }
+
+
     document.getElementById('roll-dice-btn').addEventListener('click', () => {
         playSound('dice-sfx');
         rollDice();
     });
     document.getElementById('end-turn-btn').addEventListener('click', endTurn);
     document.getElementById('buy-property-btn').addEventListener('click', () => {
-        // This button should only be enabled when a property is landed on.
-        // The modal's confirm/decline buttons will call buyProperty(true/false).
-        // For now, let's ensure it calls buyProperty(true) if it's ever visible and clicked.
         buyProperty(true);
     });
     document.getElementById('manage-properties-btn').addEventListener('click', manageProperties);
