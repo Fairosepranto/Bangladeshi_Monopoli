@@ -1,10 +1,9 @@
-﻿import { initBoard, renderBoard, updatePlayerTokenPosition, renderPlayerTokens, renderPropertyImprovements } from './board.js';
+import { initBoard, renderBoard, updatePlayerTokenPosition, renderPlayerTokens, renderPropertyImprovements } from './board.js';
 import { initGame, startGame, rollDice, endTurn, buyProperty, manageProperties, saveGame, loadGame, resetGame, handleJailAction, bankruptPlayer, showGameOver } from './gameEngine.js';
 import { updateUI, showModal, hideModal, showMessageModal, hideMessageModal, updatePlayerInfo, updatePlayerList, updateDiceDisplay, updateLog, toggleDebugPanel, setupDebugButtons } from './ui.js';
 import { loadData } from './utils.js';
 import { setLanguage, getLocalizedText, initI18n } from './i18n.js';
 import { playSound } from './audio.js';
-
 
 /**
  * Global game state object.
@@ -24,7 +23,6 @@ window.gameState = {
     language: 'en'
 };
 
-
 /**
  * Initializes the game engine and UI components.
  * This function will now be called directly on DOMContentLoaded.
@@ -33,13 +31,11 @@ async function initGameAndUI() {
     const splashScreen = document.getElementById('splash-screen');
     const gameContainer = document.getElementById('game-container');
 
-
     // Immediately hide the splash screen if it exists
     if (splashScreen) {
         splashScreen.style.display = 'none';
     }
     gameContainer.classList.remove('hidden'); // Show the game container
-
 
     try {
         // Load game data
@@ -48,7 +44,6 @@ async function initGameAndUI() {
             loadData('data/eventCards.json'),
             loadData('data/localNewsCards.json')
         ]);
-
 
         // Initialize global game state with loaded data
         window.gameState.tiles = boardData.tiles;
@@ -65,36 +60,29 @@ async function initGameAndUI() {
         window.gameState.eventCards = eventCards.cards;
         window.gameState.localNewsCards = localNewsCards.cards;
 
-
         // Initialize internationalization
         initI18n(window.gameState.language); // Default to English
         setLanguage(window.gameState.language); // Apply initial language
-
 
         // Initialize board rendering
         initBoard(window.gameState.tiles);
         renderBoard(window.gameState.tiles);
 
-
         // Initialize game engine
         initGame();
-
 
         // Setup UI event listeners
         setupUIListeners();
         setupDebugButtons(); // Setup debug buttons
 
-
         // Start the game (e.g., prompt for number of players)
         startGame();
-
 
     } catch (error) {
         console.error("Failed to load game data or initialize game:", error);
         showMessageModal('Error', 'Failed to load game data. Please check console for details.');
     }
 }
-
 
 /**
  * Sets up all UI event listeners.
@@ -119,7 +107,6 @@ function setupUIListeners() {
     document.getElementById('reset-game-btn').addEventListener('click', resetGame);
     document.getElementById('toggle-debug-btn').addEventListener('click', toggleDebugPanel);
 
-
     // Modal close buttons
     document.getElementById('buy-modal-confirm').addEventListener('click', () => buyProperty(true));
     document.getElementById('buy-modal-decline').addEventListener('click', () => buyProperty(false)); // Decline leads to auction
@@ -132,12 +119,10 @@ function setupUIListeners() {
     });
     document.getElementById('message-modal-close').addEventListener('click', () => hideMessageModal());
 
-
     // Jail modal actions
     document.getElementById('jail-pay-fine-btn').addEventListener('click', () => handleJailAction('payFine'));
     document.getElementById('jail-roll-doubles-btn').addEventListener('click', () => handleJailAction('rollDoubles'));
     document.getElementById('jail-use-card-btn').addEventListener('click', () => handleJailAction('useCard'));
-
 
     // Settings listeners
     document.getElementById('language-select').addEventListener('change', (event) => {
@@ -157,7 +142,6 @@ function setupUIListeners() {
         updateLog(getLocalizedText('free_parking_jackpot_toggled') + (window.gameState.config.freeParkingJackpot ? 'On' : 'Off'));
     });
 }
-
 
 // Start the game immediately when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', initGameAndUI);
