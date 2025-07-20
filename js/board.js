@@ -117,6 +117,10 @@ export function renderBoard() {
             tileElement.style.gridRowEnd = `span 2`;
         }
 
+        // --- DEBUGGING: Log tile positions ---
+        console.log(`Tile ${index} (${tile.name_en}): grid-row: ${pos.row}, grid-column: ${pos.col}${tileElement.classList.contains('corner') ? ', span 2' : ''}`);
+        // --- END DEBUGGING ---
+
 
         // Add click listener to show tile details
         tileElement.addEventListener('click', () => showTileDetails(tile));
