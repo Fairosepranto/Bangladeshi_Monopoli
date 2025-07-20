@@ -263,10 +263,9 @@ body {
     grid-area: board;
     display: grid;
     /* Define 11 columns: 2fr for first/last (corners), 1fr for the 9 inner columns */
-    /* Using minmax to ensure a minimum size for tiles while allowing flexibility */
-    grid-template-columns: minmax(100px, 2fr) repeat(9, 1fr) minmax(100px, 2fr);
+    grid-template-columns: 2fr repeat(9, 1fr) 2fr;
     /* Define 11 rows: 2fr for first/last (corners), 1fr for the 9 inner rows */
-    grid-template-rows: minmax(100px, 2fr) repeat(9, 1fr) minmax(100px, 2fr);
+    grid-template-rows: 2fr repeat(9, 1fr) 2fr;
     aspect-ratio: 1 / 1; /* Keep it square */
     max-width: 600px; /* Max size for the board */
     max-height: 600px;
