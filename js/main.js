@@ -38,12 +38,33 @@ async function initGameAndUI() {
     gameContainer.classList.remove('hidden'); // Show the game container
 
     try {
-        // Load game data
+        // Load game data with enhanced error handling
+        const boardDataPromise = loadData('data/boardData.json')
+            .catch(err => { console.error("Error loading boardData.json:", err); throw new Error("Failed to load board data."); });
+        const eventCardsPromise = loadData('data/eventCards.json')
+            .catch(err => { console.error("Error loading eventCards.json:", err); throw new Error("Failed to load event cards data."); });
+        const localNewsCardsPromise = loadData('data/localNewsCards.json')
+            .catch(err => { console.error("Error loading localNewsCards.json:", err); throw new Error("Failed to load local news cards data."); });
+
+
         const [boardData, eventCards, localNewsCards] = await Promise.all([
-            loadData('data/boardData.json'),
-            loadData('data/eventCards.json'),
-            loadData('data/localNewsCards.json')
+            boardDataPromise,
+            eventCardsPromise,
+            localNewsCardsPromise
         ]);
+
+        // --- NEW DEBUGGING CHECKS ---
+        if (!boardData || !boardData.tiles) {
+            throw new Error("boardData.json is missing 'tiles' property or is empty.");
+        }
+        if (!eventCards || !eventCards.cards) {
+            throw new Error("eventCards.json is missing 'cards' property or is empty.");
+        }
+        if (!localNewsCards || !localNewsCards.cards) {
+            throw new Error("localNewsCards.json is missing 'cards' property or is empty.");
+        }
+        // --- END NEW DEBUGGING CHECKS ---
+
 
         // Initialize global game state with loaded data
         window.gameState.tiles = boardData.tiles;
@@ -85,10 +106,8 @@ async function initGameAndUI() {
 
     } catch (error) {
         console.error("Failed to load game data or initialize game:", error);
-        // We're showing a generic error message, but the console has the real details.
-        // If boardData.json failed, the board wouldn't render at all.
-        // This error likely means eventCards.json or localNewsCards.json failed to load.
-        showMessageModal('Error', 'Failed to load game data. Please check console for details.');
+        // The error message will now be more specific if it's a JSON content issue.
+        showMessageModal('Error', `Failed to load game data: ${error.message || 'Unknown error'}. Please check console for details.`);
     }
 }
 
