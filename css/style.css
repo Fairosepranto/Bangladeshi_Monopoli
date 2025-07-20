@@ -151,9 +151,10 @@ body {
     box-shadow: 0 10px 30px var(--shadow-dark);
     padding: 20px;
     max-width: 1200px;
+    /* Removed max-height to allow board to expand if needed */
+    /* Removed overflow: hidden to prevent clipping */
     width: 95%;
-    max-height: 95vh;
-    overflow: hidden;
+    height: auto; /* Allow height to adjust */
     box-sizing: border-box;
 }
 
@@ -262,21 +263,23 @@ body {
 .board-container {
     grid-area: board;
     display: grid;
-    /* Define 11 columns: 2 large for corners, 9 small for sides */
-    /* Example: 100px for corner tracks, 70px for side tracks */
-    grid-template-columns: 100px repeat(9, 70px) 100px;
-    /* Define 11 rows: 2 large for corners, 9 small for sides */
-    grid-template-rows: 100px repeat(9, 70px) 100px;
+    /* Define 11 columns: 2fr for first/last (corners), 1fr for the 9 inner columns */
+    grid-template-columns: 2fr repeat(9, 1fr) 2fr;
+    /* Define 11 rows: 2fr for first/last (corners), 1fr for the 9 inner rows */
+    grid-template-rows: 2fr repeat(9, 1fr) 2fr;
     
     /* Set a fixed size for the board to ensure it always renders fully */
-    /* Total width/height = 100px + (9 * 70px) + 100px = 100 + 630 + 100 = 830px */
-    width: 830px; 
-    height: 830px; 
+    /* This fixed size should be large enough to contain all tiles */
+    width: 700px; /* Increased width */
+    height: 700px; /* Increased height */
+    min-width: 700px; /* Ensure it doesn't shrink */
+    min-height: 700px; /* Ensure it doesn't shrink */
 
     border: 5px solid var(--border-color);
     border-radius: 15px;
     box-shadow: 0 5px 15px var(--shadow-dark);
-    overflow: hidden; /* Ensure player tokens stay within */
+    /* Changed overflow to visible to see if tiles are rendering outside */
+    overflow: visible; 
     position: relative; /* For center text and player tokens */
     margin: auto; /* Center the board */
 }
@@ -744,13 +747,6 @@ body {
         padding: 15px;
         max-height: none;
         height: auto;
-    }
-
-    .header-panel {
-        flex-direction: column;
-        gap: 10px;
-        border-bottom: none;
-        padding-bottom: 0;
     }
 
     .dice-container {
