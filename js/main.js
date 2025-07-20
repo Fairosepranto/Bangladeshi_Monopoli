@@ -68,18 +68,26 @@ async function initGameAndUI() {
         initBoard(window.gameState.tiles);
         renderBoard(window.gameState.tiles);
 
-        // Initialize game engine
+        // Initialize game engine (resets state, but doesn't create players yet)
         initGame();
 
-        // Setup UI event listeners
+        // Setup UI event listeners (these can be set up before players exist)
         setupUIListeners();
         setupDebugButtons(); // Setup debug buttons
 
-        // Start the game (e.g., prompt for number of players)
+        // --- CRITICAL CHANGE: Call startGame() BEFORE updateUI() ---
+        // startGame() will prompt for player names and populate window.gameState.players
         startGame();
+
+        // Now that players exist, updateUI can safely be called
+        updateUI();
+
 
     } catch (error) {
         console.error("Failed to load game data or initialize game:", error);
+        // We're showing a generic error message, but the console has the real details.
+        // If boardData.json failed, the board wouldn't render at all.
+        // This error likely means eventCards.json or localNewsCards.json failed to load.
         showMessageModal('Error', 'Failed to load game data. Please check console for details.');
     }
 }
