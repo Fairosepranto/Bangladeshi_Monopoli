@@ -262,14 +262,16 @@ body {
 .board-container {
     grid-area: board;
     display: grid;
-    /* Define 11 columns, all equal fractions */
-    grid-template-columns: repeat(11, 1fr);
-    /* Define 11 rows, all equal fractions */
-    grid-template-rows: repeat(11, 1fr);
+    /* Define 11 columns: 2 large for corners, 9 small for sides */
+    /* Example: 100px for corner tracks, 70px for side tracks */
+    grid-template-columns: 100px repeat(9, 70px) 100px;
+    /* Define 11 rows: 2 large for corners, 9 small for sides */
+    grid-template-rows: 100px repeat(9, 70px) 100px;
     
     /* Set a fixed size for the board to ensure it always renders fully */
-    width: 600px; /* You can adjust this size */
-    height: 600px; /* Must be equal to width for a square board */
+    /* Total width/height = 100px + (9 * 70px) + 100px = 100 + 630 + 100 = 830px */
+    width: 830px; 
+    height: 830px; 
 
     border: 5px solid var(--border-color);
     border-radius: 15px;
@@ -756,8 +758,11 @@ body {
     }
 
     .board-container {
-        max-width: 500px; /* Adjust max width for smaller screens */
-        max-height: 500px;
+        /* On smaller screens, make board responsive but maintain aspect ratio */
+        width: 100%;
+        height: auto; /* Allow height to adjust based on content */
+        max-width: 500px; /* Limit max width */
+        max-height: 500px; /* Limit max height */
         margin: 0 auto;
     }
 
