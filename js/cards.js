@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Shuffles an array in place (Fisher-Yates algorithm).
  * @param {Array<any>} array - The array to shuffle.
  */
@@ -8,7 +8,6 @@ function shuffle(array) {
         [array[i], array[j]] = [array[j], array[i]];
     }
 }
-
 
 /**
  * Draws a card from the specified deck. Shuffles if deck is empty.
@@ -32,13 +31,11 @@ export function drawCard(deck) {
         shuffle(deck);
     }
 
-
     if (deck.length > 0) {
         return deck.shift(); // Remove and return the first card
     }
     return null;
 }
-
 
 /**
  * Initializes card decks by shuffling them.
