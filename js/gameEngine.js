@@ -1,11 +1,10 @@
-﻿import { Player, getPlayerColor } from './players.js';
+import { Player, getPlayerColor } from './players.js';
 import { updateUI, updatePlayerInfo, updatePlayerList, updateDiceDisplay, updateLog, showModal, hideModal, showMessageModal, hideMessageModal, updateManagePropertiesModal } from './ui.js';
 import { updatePlayerTokenPosition, renderPlayerTokens, renderPropertyImprovements, highlightCurrentPlayerToken } from './board.js';
 import { drawCard } from './cards.js';
 import { saveGameState, loadGameState, clearGameState } from './storage.js';
 import { getLocalizedText } from './i18n.js';
 import { playSound } from './audio.js';
-
 
 /**
  * Initializes the game state and sets up initial players.
@@ -17,7 +16,6 @@ export function initGame() {
     window.gameState.freeParkingPot = 0;
     window.gameState.isGameRunning = false;
 
-
     // Reset tiles owner, houses, mortgage status
     window.gameState.tiles.forEach(tile => {
         delete tile.owner;
@@ -26,53 +24,66 @@ export function initGame() {
         delete tile.isMortgaged;
     });
 
-
     updateLog(getLocalizedText('game_initialized'));
-    updateUI();
+    // Do not call updateUI here directly, it will be called after players are set up.
 }
-
 
 /**
  * Starts a new game, prompting for player count.
+ * @returns {boolean} True if game started successfully, false otherwise.
  */
 export function startGame() {
     let numPlayers = prompt(getLocalizedText('enter_num_players_prompt'), '2');
-    numPlayers = parseInt(numPlayers);
+    // If user clicks Cancel on the first prompt, numPlayers will be null.
+    if (numPlayers === null) {
+        showMessageModal(getLocalizedText('game_cancelled'), getLocalizedText('player_setup_cancelled'));
+        initGame(); // Reset any partial state
+        return false; // Indicate that game setup was cancelled
+    }
 
+    numPlayers = parseInt(numPlayers);
 
     if (isNaN(numPlayers) || numPlayers < 2 || numPlayers > 6) {
         showMessageModal(getLocalizedText('invalid_input'), getLocalizedText('invalid_players_count'));
-        return;
+        initGame(); // Reset any partial state
+        return false; // Indicate invalid input
     }
 
-
-    initGame(); // Reset game state before starting a new one
-
+    initGame(); // Reset game state before starting a new one, ensures clean slate
 
     for (let i = 0; i < numPlayers; i++) {
         const playerName = prompt(getLocalizedText('enter_player_name_prompt') + (i + 1), `${getLocalizedText('player')} ${i + 1}`);
+        // If user cancels any player name prompt, playerName will be null.
+        if (playerName === null) {
+            showMessageModal(getLocalizedText('game_cancelled'), getLocalizedText('player_setup_cancelled'));
+            initGame(); // Reset game state as setup was cancelled
+            return false; // Indicate failure to start
+        }
         window.gameState.players.push(new Player(i, playerName || `${getLocalizedText('player')} ${i + 1}`));
     }
 
-
     window.gameState.isGameRunning = true;
-    renderPlayerTokens();
-    updateUI();
+    renderPlayerTokens(); // Render tokens for newly created players
     updateLog(getLocalizedText('game_started_with') + `${numPlayers} ${getLocalizedText('players')}.`);
     highlightCurrentPlayerToken(window.gameState.players[window.gameState.currentPlayerIndex].id);
     document.getElementById('roll-dice-btn').disabled = false;
     document.getElementById('end-turn-btn').disabled = true;
-}
 
+    return true; // Indicate successful game start
+}
 
 /**
  * Gets the current player.
  * @returns {Player} The current player object.
  */
 function getCurrentPlayer() {
+    // Add a defensive check here to prevent errors if players array is empty
+    if (window.gameState.players.length === 0) {
+        console.warn("getCurrentPlayer called with no players in gameState.");
+        return null; // Or throw an error, depending on desired behavior
+    }
     return window.gameState.players[window.gameState.currentPlayerIndex];
 }
-
 
 /**
  * Rolls the dice, moves the player, and handles landing on a tile.
@@ -80,8 +91,12 @@ function getCurrentPlayer() {
 export function rollDice() {
     if (!window.gameState.isGameRunning) return;
 
-
     const player = getCurrentPlayer();
+    if (!player) { // Defensive check
+        console.error("No current player to roll dice.");
+        return;
+    }
+
     if (player.isInJail) {
         showModal('jail-modal');
         updateLog(getLocalizedText('player_in_jail', player.name));
@@ -89,10 +104,8 @@ export function rollDice() {
         return;
     }
 
-
     document.getElementById('roll-dice-btn').disabled = true; // Disable roll button after rolling
     document.getElementById('end-turn-btn').disabled = true; // Disable end turn until action is complete
-
 
     const die1 = Math.floor(Math.random() * 6) + 1;
     const die2 = Math.floor(Math.random() * 6) + 1;
@@ -100,10 +113,8 @@ export function rollDice() {
     updateDiceDisplay(die1, die2);
     playSound('dice-sfx');
 
-
     const rollSum = die1 + die2;
     updateLog(`${player.name} ${getLocalizedText('rolled')} ${die1} + ${die2} = ${rollSum}`);
-
 
     // Dice rolling animation
     const die1El = document.getElementById('die1');
@@ -111,11 +122,9 @@ export function rollDice() {
     die1El.classList.add('rolling');
     die2El.classList.add('rolling');
 
-
     setTimeout(() => {
         die1El.classList.remove('rolling');
         die2El.classList.remove('rolling');
-
 
         // Check for doubles
         if (die1 === die2) {
@@ -132,7 +141,6 @@ export function rollDice() {
             player.doublesRolled = 0; // Reset doubles count if no doubles
         }
 
-
         movePlayer(player, rollSum);
         // After move and land action, enable end turn if not in jail or special action
         if (!player.isInJail) {
@@ -141,7 +149,6 @@ export function rollDice() {
         saveGame(); // Auto-save after each roll
     }, 1000); // Allow time for dice animation
 }
-
 
 /**
  * Moves the player token and handles passing GO.
@@ -152,7 +159,6 @@ function movePlayer(player, steps) {
     const oldPosition = player.position;
     player.position = (player.position + steps) % window.gameState.tiles.length;
 
-
     // Check if player passed GO
     if (player.position < oldPosition) {
         player.addCash(window.gameState.config.goMoney);
@@ -160,18 +166,15 @@ function movePlayer(player, steps) {
         playSound('cash-sfx');
     }
 
-
     updatePlayerTokenPosition(player.id, player.position);
     updatePlayerInfo(player);
     updatePlayerList();
-
 
     // Land on tile actions
     setTimeout(() => {
         landOnTile(player, window.gameState.tiles[player.position]);
     }, 500); // Short delay for movement animation
 }
-
 
 /**
  * Handles the actions when a player lands on a specific tile.
@@ -180,7 +183,6 @@ function movePlayer(player, steps) {
  */
 function landOnTile(player, tile) {
     updateLog(`${player.name} ${getLocalizedText('landed_on')} ${getLocalizedText(tile.name_en, tile.name_bn)}.`);
-
 
     switch (tile.type) {
         case 'property':
@@ -220,7 +222,6 @@ function landOnTile(player, tile) {
     }
 }
 
-
 /**
  * Handles landing on a property, station, or utility.
  * @param {Player} player - The current player.
@@ -247,7 +248,6 @@ function handlePropertyLanding(player, tile) {
             return;
         }
 
-
         let rentAmount = 0;
         if (tile.type === 'property') {
             // Calculate property rent
@@ -258,7 +258,6 @@ function handlePropertyLanding(player, tile) {
             } else {
                 rentAmount = tile.rent[numHouses];
             }
-
 
             // If owner has all properties in group and no houses, double base rent
             if (numHouses === 0 && !hasHotel) {
@@ -285,20 +284,17 @@ function handlePropertyLanding(player, tile) {
             }
         }
 
-
         if (tile.isMortgaged) {
             updateLog(`${getLocalizedText(tile.name_en, tile.name_bn)} ${getLocalizedText('is_mortgaged_no_rent')}`);
             document.getElementById('roll-dice-btn').disabled = false; // Re-enable roll button
             return;
         }
 
-
         player.deductCash(rentAmount);
         owner.addCash(rentAmount);
         updateLog(`${player.name} ${getLocalizedText('paid_rent_to')} ${owner.name}: ${window.gameState.config.currencySymbol} ${rentAmount}`);
         playSound('cash-sfx');
         updateUI();
-
 
         // Check for bankruptcy after paying rent
         if (player.cash < 0) {
@@ -307,7 +303,6 @@ function handlePropertyLanding(player, tile) {
         document.getElementById('roll-dice-btn').disabled = false; // Re-enable roll button
     }
 }
-
 
 /**
  * Handles landing on a tax tile.
@@ -321,12 +316,10 @@ function handleTaxLanding(player, tile) {
     playSound('cash-sfx');
     updateUI();
 
-
     if (window.gameState.config.freeParkingJackpot) {
         window.gameState.freeParkingPot += taxAmount;
         updateLog(getLocalizedText('free_parking_pot_increased', window.gameState.config.currencySymbol + taxAmount));
     }
-
 
     // Check for bankruptcy after paying tax
     if (player.cash < 0) {
@@ -334,7 +327,6 @@ function handleTaxLanding(player, tile) {
     }
     document.getElementById('roll-dice-btn').disabled = false; // Re-enable roll button
 }
-
 
 /**
  * Handles landing on an event or local news card tile.
@@ -345,17 +337,14 @@ function handleCardLanding(player, cardType) {
     const deck = cardType === 'event' ? window.gameState.eventCards : window.gameState.localNewsCards;
     const card = drawCard(deck);
 
-
     if (!card) {
         updateLog(getLocalizedText('no_cards_left', cardType));
         document.getElementById('roll-dice-btn').disabled = false;
         return;
     }
 
-
     updateLog(`${player.name} ${getLocalizedText('drew_card')}: "${getLocalizedText(card.text_en, card.text_bn)}"`);
     showMessageModal(getLocalizedText('card_drawn'), getLocalizedText(card.text_en, card.text_bn));
-
 
     // Execute card action
     setTimeout(() => { // Delay action to allow user to read card
@@ -365,13 +354,12 @@ function handleCardLanding(player, cardType) {
     }, 1500);
 }
 
-
 /**
  * Executes the action specified by a card.
  * @param {Player} player - The player who drew the card.
  * @param {object} card - The card object.
  */
-function executeCardAction(player, card) {
+export function executeCardAction(player, card) {
     switch (card.action) {
         case 'collect_money':
             player.addCash(card.amount);
@@ -431,7 +419,6 @@ function executeCardAction(player, card) {
             let nearestStationPos = -1;
             let minDistance = Infinity;
 
-
             for (let i = 0; i < window.gameState.tiles.length; i++) {
                 const tile = window.gameState.tiles[i];
                 if (tile.type === 'station') {
@@ -455,7 +442,6 @@ function executeCardAction(player, card) {
     updateUI();
 }
 
-
 /**
  * Handles the Free Parking tile.
  * @param {Player} player - The current player.
@@ -471,7 +457,6 @@ function handleFreeParking(player) {
     }
     updateUI();
 }
-
 
 /**
  * Sends a player to jail (Thana).
@@ -491,7 +476,6 @@ function sendToJail(player) {
     document.getElementById('end-turn-btn').disabled = true; // Disable end turn button
 }
 
-
 /**
  * Handles actions taken by a player in jail.
  * @param {'payFine'|'rollDoubles'|'useCard'} actionType - The action chosen by the player.
@@ -499,7 +483,6 @@ function sendToJail(player) {
 export function handleJailAction(actionType) {
     const player = getCurrentPlayer();
     hideModal('jail-modal');
-
 
     switch (actionType) {
         case 'payFine':
@@ -523,7 +506,6 @@ export function handleJailAction(actionType) {
             updateDiceDisplay(die1, die2);
             playSound('dice-sfx');
             updateLog(`${player.name} ${getLocalizedText('rolled')} ${die1} + ${die2} = ${die1 + die2} ${getLocalizedText('in_jail')}.`);
-
 
             if (die1 === die2) {
                 player.isInJail = false;
@@ -566,15 +548,18 @@ export function handleJailAction(actionType) {
     saveGame();
 }
 
-
 /**
  * Ends the current player's turn and advances to the next player.
  */
 export function endTurn() {
     if (!window.gameState.isGameRunning) return;
 
-
     const currentPlayer = getCurrentPlayer();
+    if (!currentPlayer) { // Defensive check
+        console.error("No current player to end turn.");
+        return;
+    }
+
     if (currentPlayer.doublesRolled > 0 && !currentPlayer.isInJail) {
         updateLog(getLocalizedText('player_gets_extra_turn', currentPlayer.name));
         currentPlayer.doublesRolled = 0; // Reset for next roll
@@ -582,7 +567,6 @@ export function endTurn() {
         document.getElementById('end-turn-btn').disabled = true;
         return;
     }
-
 
     // Find the next active player
     let nextPlayerIndex = (window.gameState.currentPlayerIndex + 1) % window.gameState.players.length;
@@ -592,14 +576,12 @@ export function endTurn() {
         attempts++;
     }
 
-
     // If all players are bankrupt except one, end game
     const activePlayers = window.gameState.players.filter(p => !p.isBankrupt);
     if (activePlayers.length <= 1) {
         showGameOver(activePlayers[0]);
         return;
     }
-
 
     window.gameState.currentPlayerIndex = nextPlayerIndex;
     updateLog(`${getLocalizedText('turn_ended_for')} ${currentPlayer.name}. ${getLocalizedText('next_turn_for')} ${getCurrentPlayer().name}.`);
@@ -610,7 +592,6 @@ export function endTurn() {
     saveGame(); // Auto-save after each turn
 }
 
-
 /**
  * Handles buying a property.
  * @param {boolean} confirmed - True if the player confirmed the purchase, false if declined (auction).
@@ -618,16 +599,16 @@ export function endTurn() {
 export function buyProperty(confirmed) {
     hideModal('buy-property-modal');
     const player = getCurrentPlayer();
+    if (!player) return; // Defensive check
+
     const tileId = parseInt(document.getElementById('buy-property-btn').dataset.tileId);
     const tile = window.gameState.tiles.find(t => t.id === tileId);
-
 
     if (!tile) {
         console.error("Tile not found for purchase.");
         document.getElementById('roll-dice-btn').disabled = false;
         return;
     }
-
 
     if (confirmed) {
         if (player.cash >= tile.price) {
@@ -653,7 +634,6 @@ export function buyProperty(confirmed) {
     document.getElementById('roll-dice-btn').disabled = false; // Re-enable roll button
 }
 
-
 /**
  * Starts an auction for a property. (Simplified for initial implementation)
  * TODO: Implement a proper auction system with bidding.
@@ -668,19 +648,18 @@ function startAuction(tile) {
     document.getElementById('roll-dice-btn').disabled = false; // Re-enable roll button after auction message
 }
 
-
 /**
  * Manages player properties (build houses/hotels, mortgage/unmortgage).
  */
 export function manageProperties() {
     const player = getCurrentPlayer();
-    const playerProperties = window.gameState.tiles.filter(tile => player.properties.includes(tile.id));
+    if (!player) return; // Defensive check
 
+    const playerProperties = window.gameState.tiles.filter(tile => player.properties.includes(tile.id));
 
     updateManagePropertiesModal(playerProperties, player);
     showModal('manage-properties-modal');
 }
-
 
 /**
  * Handles building houses/hotels on a property.
@@ -688,37 +667,33 @@ export function manageProperties() {
  */
 export function buildHouse(tileId) {
     const player = getCurrentPlayer();
-    const tile = window.gameState.tiles.find(t => t.id === tileId);
+    if (!player) return; // Defensive check
 
+    const tile = window.gameState.tiles.find(t => t.id === tileId);
 
     if (!tile || tile.type !== 'property' || tile.owner !== player.id) {
         console.error("Invalid tile or not owned by current player.");
         return;
     }
 
-
     // Check if player owns all properties in the group
     const groupTiles = window.gameState.tiles.filter(t => t.group === tile.group && t.type === 'property');
     const ownerHasAllGroup = groupTiles.every(t => t.owner === player.id);
-
 
     if (!ownerHasAllGroup) {
         showMessageModal(getLocalizedText('cannot_build'), getLocalizedText('must_own_full_set'));
         return;
     }
 
-
     // Check if houses are evenly distributed
     const canBuildEvenly = groupTiles.every(t =>
         (t.houses || 0) <= (tile.houses || 0) || t.hasHotel // Can't build if other properties in group have fewer houses
     );
 
-
     if (!canBuildEvenly) {
         showMessageModal(getLocalizedText('cannot_build'), getLocalizedText('must_build_evenly'));
         return;
     }
-
 
     let cost = 0;
     if (tile.hasHotel) {
@@ -752,21 +727,20 @@ export function buildHouse(tileId) {
     saveGame();
 }
 
-
 /**
  * Handles selling houses/hotels on a property.
  * @param {number} tileId - The ID of the property tile.
  */
 export function sellHouse(tileId) {
     const player = getCurrentPlayer();
-    const tile = window.gameState.tiles.find(t => t.id === tileId);
+    if (!player) return; // Defensive check
 
+    const tile = window.gameState.tiles.find(t => t.id === tileId);
 
     if (!tile || tile.type !== 'property' || tile.owner !== player.id) {
         console.error("Invalid tile or not owned by current player.");
         return;
     }
-
 
     // Check if houses are evenly distributed (cannot sell if it makes distribution uneven)
     const groupTiles = window.gameState.tiles.filter(t => t.group === tile.group && t.type === 'property');
@@ -774,12 +748,10 @@ export function sellHouse(tileId) {
         (t.houses || 0) >= (tile.houses || 0) || t.hasHotel // Can't sell if other properties in group have more houses
     );
 
-
     if (!canSellEvenly) {
         showMessageModal(getLocalizedText('cannot_sell'), getLocalizedText('must_sell_evenly'));
         return;
     }
-
 
     let refund = 0;
     if (tile.hasHotel) {
@@ -805,32 +777,29 @@ export function sellHouse(tileId) {
     saveGame();
 }
 
-
 /**
  * Handles mortgaging a property.
  * @param {number} tileId - The ID of the property tile.
  */
 export function mortgageProperty(tileId) {
     const player = getCurrentPlayer();
-    const tile = window.gameState.tiles.find(t => t.id === tileId);
+    if (!player) return; // Defensive check
 
+    const tile = window.gameState.tiles.find(t => t.id === tileId);
 
     if (!tile || tile.owner !== player.id || tile.isMortgaged) {
         console.error("Invalid tile or not owned by current player or already mortgaged.");
         return;
     }
 
-
     // Cannot mortgage if there are houses/hotels on any property in the group
     const groupTiles = window.gameState.tiles.filter(t => t.group === tile.group && t.type === 'property');
     const hasImprovementsInGroup = groupTiles.some(t => (t.houses || 0) > 0 || t.hasHotel);
-
 
     if (hasImprovementsInGroup) {
         showMessageModal(getLocalizedText('cannot_mortgage'), getLocalizedText('must_sell_all_improvements_first'));
         return;
     }
-
 
     const mortgageValue = tile.price * window.gameState.config.mortgageRate;
     player.addCash(mortgageValue);
@@ -842,21 +811,20 @@ export function mortgageProperty(tileId) {
     saveGame();
 }
 
-
 /**
  * Handles unmortgaging a property.
  * @param {number} tileId - The ID of the property tile.
  */
 export function unmortgageProperty(tileId) {
     const player = getCurrentPlayer();
-    const tile = window.gameState.tiles.find(t => t.id === tileId);
+    if (!player) return; // Defensive check
 
+    const tile = window.gameState.tiles.find(t => t.id === tileId);
 
     if (!tile || tile.owner !== player.id || !tile.isMortgaged) {
         console.error("Invalid tile or not owned by current player or not mortgaged.");
         return;
     }
-
 
     const unmortgageCost = tile.price * window.gameState.config.mortgageRate * 1.1; // 10% interest
     if (player.cash >= unmortgageCost) {
@@ -872,16 +840,14 @@ export function unmortgageProperty(tileId) {
     saveGame();
 }
 
-
 /**
  * Handles player bankruptcy.
  * @param {Player} bankruptPlayer - The player who is bankrupt.
  * @param {Player|null} creditor - The player who caused the bankruptcy (or null if bank/tax).
  */
-function handleBankruptcy(bankruptPlayer, creditor) {
+export function bankruptPlayer(bankruptPlayer, creditor) {
     updateLog(`${bankruptPlayer.name} ${getLocalizedText('is_bankrupt')}.`);
     bankruptPlayer.isBankrupt = true;
-
 
     // Transfer assets
     bankruptPlayer.properties.forEach(propId => {
@@ -899,7 +865,6 @@ function handleBankruptcy(bankruptPlayer, creditor) {
             }
             renderPropertyImprovements(tile.id, tile.houses, tile.hasHotel);
 
-
             if (creditor) {
                 // Transfer property to creditor
                 tile.owner = creditor.id;
@@ -916,7 +881,6 @@ function handleBankruptcy(bankruptPlayer, creditor) {
     });
     bankruptPlayer.properties = []; // Clear properties from bankrupt player
 
-
     // Transfer remaining cash
     if (creditor) {
         creditor.addCash(bankruptPlayer.cash);
@@ -929,10 +893,8 @@ function handleBankruptcy(bankruptPlayer, creditor) {
     bankruptPlayer.getOutOfJailCards = 0;
     bankruptPlayer.isInJail = false;
 
-
     updateUI();
     renderPlayerTokens(); // Re-render tokens to remove bankrupt player's token
-
 
     // Check game over condition
     const activePlayers = window.gameState.players.filter(p => !p.isBankrupt);
@@ -947,7 +909,6 @@ function handleBankruptcy(bankruptPlayer, creditor) {
     saveGame();
 }
 
-
 /**
  * Saves the current game state to localStorage.
  */
@@ -956,7 +917,6 @@ export function saveGame() {
     updateLog(getLocalizedText('game_saved'));
     showMessageModal(getLocalizedText('game_saved'), getLocalizedText('game_saved_successfully'));
 }
-
 
 /**
  * Loads game state from localStorage.
@@ -971,7 +931,6 @@ export function loadGame() {
             return player;
         });
 
-
         // Ensure tiles are correctly referenced and properties are restored
         loadedState.tiles.forEach(loadedTile => {
             const originalTile = window.gameState.tiles.find(t => t.id === loadedTile.id);
@@ -980,9 +939,7 @@ export function loadGame() {
             }
         });
 
-
         Object.assign(window.gameState, loadedState);
-
 
         // Restore UI based on loaded state
         renderBoard(); // Re-render board to show owners, houses etc.
@@ -1000,7 +957,6 @@ export function loadGame() {
     }
 }
 
-
 /**
  * Resets the game to its initial state.
  */
@@ -1013,7 +969,6 @@ export function resetGame() {
         updateLog(getLocalizedText('game_reset'));
     }
 }
-
 
 /**
  * Shows the game over modal.
